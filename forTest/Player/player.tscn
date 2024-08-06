@@ -1,0 +1,28 @@
+[gd_scene load_steps=5 format=3 uid="uid://uyyu7aeil6t2"]
+
+[ext_resource type="Script" path="res://forTest/Player/player.gd" id="1_e73y0"]
+[ext_resource type="Texture2D" uid="uid://db2ghppdnn2kx" path="res://icon.svg" id="2_p5hlb"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uxfyu"]
+size = Vector2(125, 126)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_b5jbv"]
+radius = 21.0
+
+[node name="Player" type="CharacterBody2D" groups=["Player"]]
+collision_mask = 2
+script = ExtResource("1_e73y0")
+
+[node name="PlayerSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_p5hlb")
+
+[node name="BoxCollision" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 0)
+shape = SubResource("RectangleShape2D_uxfyu")
+
+[node name="StickyDetector" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 8
+
+[node name="DetectorCollision" type="CollisionShape2D" parent="StickyDetector"]
+shape = SubResource("CircleShape2D_b5jbv")

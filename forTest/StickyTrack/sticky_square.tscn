@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://forTest/StickyTrack/sticky_square.gd" id="1_yac8f"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_suov1"]
-size = Vector2(825, 83)
+size = Vector2(341, 46.5)
 
 [node name="StickySquare" type="Area2D" groups=["StickyTrack"]]
 collision_layer = 8
@@ -12,8 +12,8 @@ collision_mask = 16
 script = ExtResource("1_yac8f")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+visible = false
 texture = ExtResource("1_v3mso")
 
 [node name="PushCollision" type="CollisionShape2D" parent="."]
-position = Vector2(1.5, -1.5)
 shape = SubResource("RectangleShape2D_suov1")

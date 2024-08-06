@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://h113yg3vpwrq"]
+[gd_scene load_steps=5 format=3 uid="uid://h113yg3vpwrq"]
 
 [ext_resource type="PackedScene" uid="uid://uyyu7aeil6t2" path="res://forTest/Player/player.tscn" id="1_cba5s"]
 [ext_resource type="PackedScene" uid="uid://cnkkjtmtcetxw" path="res://forTest/Ground/ground.tscn" id="2_egput"]
 [ext_resource type="PackedScene" uid="uid://c2mfaep77nqr4" path="res://forTest/StickyTrack/sticky_square.tscn" id="3_l0tst"]
+[ext_resource type="PackedScene" uid="uid://deyfn3e3knr4y" path="res://forTest/StickyTrack/sticky_ring.tscn" id="4_4rrxl"]
 
 [node name="TestMain" type="Node2D"]
 
@@ -13,13 +14,13 @@ position = Vector2(269, 465)
 position = Vector2(789, 468)
 
 [node name="StickySquare" parent="." instance=ExtResource("3_l0tst")]
-position = Vector2(617, 432)
+position = Vector2(567, 121)
 
 [node name="StickySquare3" parent="." instance=ExtResource("3_l0tst")]
-position = Vector2(610, 442)
+position = Vector2(389, 384)
 
 [node name="StickySquare2" parent="." instance=ExtResource("3_l0tst")]
-position = Vector2(599, 248)
+position = Vector2(1294, 334)
 rotation = 1.5799
 
 [node name="Player" parent="." instance=ExtResource("1_cba5s")]
@@ -27,3 +28,6 @@ position = Vector2(119, 376)
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 visible = false
+
+[node name="StickyRing" parent="." instance=ExtResource("4_4rrxl")]
+position = Vector2(377, 109)

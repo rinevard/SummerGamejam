@@ -42,7 +42,7 @@ func get_push_vector(point: Vector2) -> Vector2:
     )
     
     # 根据到边缘的距离计算推力强度
-    var force = max_push_force * (distance_to_edge / min(width, height))
+    var force = max_push_force# * (distance_to_edge / min(width, height))
     
     return push_direction * force
 

@@ -1,47 +1,57 @@
 extends StickyTrack
-class_name StickyCircle
+class_name StickyRing
 
-@onready var push_collision: CollisionShape2D = $PushCollision
-
-# 内圆半径
-@export var inner_radius: float = 80.0
-
-# 外圆半径
-@export var outer_radius: float = 120.0
+@export var inner_radius: float = 200.0
+@export var outer_radius: float = 300.0
+@export var seg_count: int = 72
+@export var ring_color: Color = Color(0.2, 0.2, 0.2)  # Dark gray color
 
 func _ready() -> void:
     super()
+    create_circle_ring()
+
+func create_circle_ring() -> void:
+    """
+    创建圆环,包括可视化的多边形和碰撞形状。
+    """
+    var angle := 360.0 / seg_count
+    var points := PackedVector2Array()
     
-    if push_collision != null and push_collision.shape != null:
-        if push_collision.shape is CircleShape2D:
-            var circle_shape: CircleShape2D = push_collision.shape 
-            outer_radius = circle_shape.radius
-            inner_radius = outer_radius * 0.75  # 可以根据需要调整
+    # 外点和内点在points中的顺序需要一个按逆时针，一个按顺时针。这样才能删去中间区域。
+    # 在我们的代码中，外点逆时针，内点顺时针。
+    for i in range(seg_count + 1):
+        var rot := float(i) * angle
+        var rad_angle := deg_to_rad(rot)
+        var outer_point := Vector2(sin(rad_angle) * outer_radius, cos(rad_angle) * outer_radius)
+        points.append(outer_point)
+    
+    for i in range(seg_count, -1, -1):
+        var rot := float(i) * angle
+        var rad_angle := deg_to_rad(rot)
+        var inner_point := Vector2(sin(rad_angle) * inner_radius, cos(rad_angle) * inner_radius)
+        points.append(inner_point)
+    
+    var polygon := Polygon2D.new()
+    polygon.color = ring_color
+    polygon.antialiased = true
+    polygon.set_polygon(points)
+    add_child(polygon)
+
+    var col_polygon := CollisionPolygon2D.new()
+    col_polygon.set_polygon(points)
+    add_child(col_polygon)
 
 func is_point_inside(point: Vector2) -> bool:
-    var local_point = to_local(point) - core_position
-    var distance = local_point.length()
+    var local_point := to_local(point) - core_position
+    var distance := local_point.length()
     return distance >= inner_radius and distance <= outer_radius
 
 func get_push_vector(point: Vector2) -> Vector2:
-    var local_point = to_local(point) - core_position
-    var distance = local_point.length()
-    var direction = local_point.normalized().rotated(PI/2)  # 切线方向
-    
-    # 计算到环中心线的距离
-    var distance_to_center = abs(distance - (inner_radius + outer_radius) / 2)
-    var max_distance = (outer_radius - inner_radius) / 2
-    
-    # 根据到中心线的距离计算推力强度
-    var force = max_push_force #* (1 - distance_to_center / max_distance)
-    
-    return direction * force
+    var local_point := to_local(point) - core_position
+    var direction := local_point.normalized().rotated(PI/2)
+    return direction * max_push_force
 
 func _draw() -> void:
     draw_arc(core_position, inner_radius, 0, TAU, 32, Color.BLUE, 2)
     draw_arc(core_position, outer_radius, 0, TAU, 32, Color.BLUE, 2)
     draw_circle(core_position, 5, Color.RED)
-
-func update_push_direction() -> void:
-    # 圆环不需要更新推力方向，因为它是环形的
-    pass

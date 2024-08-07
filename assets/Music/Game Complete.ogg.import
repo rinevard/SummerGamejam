@@ -1,0 +1,19 @@
+[remap]
+
+importer="oggvorbisstr"
+type="AudioStreamOggVorbis"
+uid="uid://sdyg75yu1n6r"
+path="res://.godot/imported/Game Complete.ogg-505c77fe7bc9d9a2f7ceee6294498722.oggvorbisstr"
+
+[deps]
+
+source_file="res://assets/Music/Game Complete.ogg"
+dest_files=["res://.godot/imported/Game Complete.ogg-505c77fe7bc9d9a2f7ceee6294498722.oggvorbisstr"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

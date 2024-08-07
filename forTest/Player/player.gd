@@ -13,6 +13,10 @@ var _sticky_tracks: Array[StickyTrack] = []
 @onready var _sticky_detector: Area2D = $StickyDetector
 @onready var _player_collision: CollisionShape2D = $BoxCollision
 
+# 新增：预加载StickySquare和StickyRing场景
+@onready var sticky_square_scene = preload("res://forTest/StickyTrack/sticky_square.tscn")
+@onready var sticky_ring_scene = preload("res://forTest/StickyTrack/sticky_ring.tscn")
+
 func _ready() -> void:
     _sticky_detector.area_entered.connect(_on_sticky_detector_area_entered)
     _sticky_detector.area_exited.connect(_on_sticky_detector_area_exited)
@@ -26,6 +30,12 @@ func _physics_process(delta: float) -> void:
     
     _apply_sticky_track_forces(delta)
     move_and_slide()
+    
+    # 新增：检测Q和W键的按下
+    if Input.is_action_just_pressed("ui_q"):
+        _place_sticky_square()
+    elif Input.is_action_just_pressed("ui_w"):
+        _place_sticky_ring()
 
 func _initialize_normal_mode() -> void:
     _in_core_mode = false
@@ -78,3 +88,15 @@ func _exit_core_mode() -> void:
         _in_core_mode = false
         _player_collision.set_deferred("disabled", false)
         print("Exited core mode")
+
+# 新增：在玩家位置放置StickySquare
+func _place_sticky_square() -> void:
+    var sticky_square = sticky_square_scene.instantiate()
+    sticky_square.global_position = global_position
+    get_parent().add_child(sticky_square)
+
+# 新增：在玩家位置放置StickyRing
+func _place_sticky_ring() -> void:
+    var sticky_ring = sticky_ring_scene.instantiate()
+    sticky_ring.global_position = global_position
+    get_parent().add_child(sticky_ring)

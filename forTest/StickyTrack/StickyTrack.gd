@@ -23,6 +23,10 @@ func is_point_inside(point: Vector2) -> bool:
 
 # 获取推力向量，可以被子类重写以实现不同的推力函数
 func get_push_vector(point: Vector2) -> Vector2:
+    """
+    Parameters:
+        point: The point in global coordinates
+    """
     var local_point = to_local(point)
     var direction = (local_point - core_position).normalized()
     var distance = local_point.distance_to(core_position)
@@ -42,6 +46,7 @@ func apply_push_force(delta: float) -> void:
     for obj in affected_objects:
         var push = get_push_vector(obj.global_position + obj.core_position)
         obj.global_position += push * delta
+
 
 func _physics_process(delta: float) -> void:
     update_affected_objects()

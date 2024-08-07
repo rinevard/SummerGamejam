@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://b3a1vh5tfoe2p"]
+
+[node name="BaseStarTrack" type="Area2D"]

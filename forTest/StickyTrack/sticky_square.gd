@@ -1,48 +1,45 @@
 extends StickyTrack
 class_name StickySquare
 
-@onready var push_collision: CollisionShape2D = $PushCollision
+var push_collision: CollisionShape2D
 
 # 方形区域的宽度
-@export var width: float = 200.0
+@export var width: float = 150.0
 
 # 方形区域的高度
-@export var height: float = 200.0
+@export var height: float = 50.0
 
 # 推力方向（默认为右方向）
 @export var push_direction: Vector2 = Vector2.RIGHT
 
 func _ready() -> void:
-    # 调用父类的 _ready 函数
     super()
-    
-    # 根据节点的旋转调整推力方向
-    push_direction = push_direction.rotated(rotation)
-    
-	# 从碰撞形状获取宽度和高度
-    if push_collision != null and push_collision.shape != null:
-        if push_collision.shape is RectangleShape2D:
-            var rect_shape: RectangleShape2D = push_collision.shape 
-            width = rect_shape.size.x
-            height = rect_shape.size.y
 
-# 重写检查点是否在推动区域内的方法
+    max_push_force = 200
+    push_direction = push_direction.rotated(rotation)    
+    create_push_collision()
+
+func create_push_collision() -> void:
+    push_collision = CollisionShape2D.new()
+    push_collision.name = "PushCollision"
+    var rect_shape = RectangleShape2D.new()
+    rect_shape.size = Vector2(width, height)
+    push_collision.shape = rect_shape
+    add_child(push_collision)
+
 func is_point_inside(point: Vector2) -> bool:
     var local_point = to_local(point) - core_position
     return abs(local_point.x) <= width / 2 and abs(local_point.y) <= height / 2
 
-# 重写获取推力向量的方法
 func get_push_vector(point: Vector2) -> Vector2:
     var local_point = to_local(point) - core_position
     
-    # 计算到边缘的距离
     var distance_to_edge = min(
         abs(width / 2 - abs(local_point.x)),
         abs(height / 2 - abs(local_point.y))
     )
     
-    # 根据到边缘的距离计算推力强度
-    var force = max_push_force# * (distance_to_edge / min(width, height))
+    var force = max_push_force
     
     return push_direction * force
 

@@ -8,18 +8,23 @@ const PUSH_ADDITION_RATIO := 100
 
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var _in_core_mode := false
-var _sticky_tracks: Array[StickyTrack] = []
+var _sticky_tracks : Array[StickyTrack] = []
+var ignore_push := false  # 用于标记是否忽略推力
+
+# 跳跃相关变量
+var remaining_jumps := 2  # 剩余跳跃次数
 
 @onready var _sticky_detector: Area2D = $StickyDetector
 @onready var _player_collision: CollisionShape2D = $BoxCollision
+@onready var _wall_detector: Area2D = $WallStuckDetector # 接触到墙体超过1秒则对玩家进行微扰，把玩家卡出墙体。
 
-# 新增：预加载StickySquare和StickyRing场景
 @onready var sticky_square_scene = preload("res://forTest/StickyTrack/sticky_square.tscn")
 @onready var sticky_ring_scene = preload("res://forTest/StickyTrack/sticky_ring.tscn")
 
 func _ready() -> void:
     _sticky_detector.area_entered.connect(_on_sticky_detector_area_entered)
     _sticky_detector.area_exited.connect(_on_sticky_detector_area_exited)
+
     call_deferred("_initialize_normal_mode")
 
 func _physics_process(delta: float) -> void:
@@ -28,10 +33,10 @@ func _physics_process(delta: float) -> void:
     else:
         _normal_move(delta)
     
-    _apply_sticky_track_forces(delta)
+    if not ignore_push:  # 只在不忽略推力时应用轨道力
+        _apply_sticky_track_forces(delta)
     move_and_slide()
     
-    # 新增：检测Q和W键的按下
     if Input.is_action_just_pressed("ui_q"):
         _place_sticky_square()
     elif Input.is_action_just_pressed("ui_w"):
@@ -40,14 +45,19 @@ func _physics_process(delta: float) -> void:
 func _initialize_normal_mode() -> void:
     _in_core_mode = false
     _player_collision.set_deferred("disabled", false)
+    remaining_jumps = 2
     print("Initialized in normal mode")
 
 func _normal_move(delta: float) -> void:
+    if is_on_floor():
+        remaining_jumps = 2
+    
     if not is_on_floor():
         velocity.y += gravity * delta
 
-    if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+    if Input.is_action_just_pressed("ui_accept") and remaining_jumps > 0:
         velocity.y = JUMP_VELOCITY
+        remaining_jumps -= 1
 
     var direction := Input.get_axis("ui_left", "ui_right")
     velocity.x = direction * SPEED if direction else move_toward(velocity.x, 0, SPEED)
@@ -58,6 +68,11 @@ func _core_move() -> void:
         Input.get_axis("ui_up", "ui_down")
     )
     velocity = direction * CORE_SPEED
+    
+    ignore_push = false
+    if Input.is_action_pressed("ui_accept"):  # "ui_select" 是空格键的默认动作名
+        ignore_push = true
+        velocity /= 5.0
 
 func _apply_sticky_track_forces(delta: float) -> void:
     var total_push_vector := Vector2.ZERO
@@ -87,15 +102,14 @@ func _exit_core_mode() -> void:
     if _in_core_mode:
         _in_core_mode = false
         _player_collision.set_deferred("disabled", false)
+        remaining_jumps = 1  # 从核心模式退出时重置为1次跳跃机会
         print("Exited core mode")
-
-# 新增：在玩家位置放置StickySquare
+        
 func _place_sticky_square() -> void:
     var sticky_square = sticky_square_scene.instantiate()
     sticky_square.global_position = global_position
     get_parent().add_child(sticky_square)
 
-# 新增：在玩家位置放置StickyRing
 func _place_sticky_ring() -> void:
     var sticky_ring = sticky_ring_scene.instantiate()
     sticky_ring.global_position = global_position

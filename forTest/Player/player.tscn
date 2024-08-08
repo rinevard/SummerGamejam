@@ -1,23 +1,27 @@
-[gd_scene load_steps=5 format=3 uid="uid://uyyu7aeil6t2"]
+[gd_scene load_steps=6 format=3 uid="uid://uyyu7aeil6t2"]
 
 [ext_resource type="Script" path="res://forTest/Player/player.gd" id="1_e73y0"]
-[ext_resource type="Texture2D" uid="uid://db2ghppdnn2kx" path="res://icon.svg" id="2_p5hlb"]
+[ext_resource type="Texture2D" uid="uid://dl837otvtuu3y" path="res://assets/Player/player-idle.png" id="2_0ba3v"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uxfyu"]
-size = Vector2(125, 126)
+size = Vector2(16.5, 19.5)
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_b5jbv"]
-radius = 21.0
+radius = 2.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3ojsj"]
+radius = 1.0
 
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_mask = 2
 script = ExtResource("1_e73y0")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
-texture = ExtResource("2_p5hlb")
+texture = ExtResource("2_0ba3v")
+hframes = 4
 
 [node name="BoxCollision" type="CollisionShape2D" parent="."]
-position = Vector2(-0.5, 0)
+position = Vector2(-0.25, 5.25)
 shape = SubResource("RectangleShape2D_uxfyu")
 
 [node name="StickyDetector" type="Area2D" parent="."]
@@ -25,4 +29,13 @@ collision_layer = 16
 collision_mask = 8
 
 [node name="DetectorCollision" type="CollisionShape2D" parent="StickyDetector"]
+position = Vector2(0, 5)
 shape = SubResource("CircleShape2D_b5jbv")
+
+[node name="WallStuckDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallStuckDetector"]
+position = Vector2(0, 5)
+shape = SubResource("CircleShape2D_3ojsj")

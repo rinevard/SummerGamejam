@@ -1,10 +1,11 @@
 extends StickyTrack
 class_name StickyRing
 
-@export var inner_radius: float = 200.0
-@export var outer_radius: float = 300.0
+@export var inner_radius: float = 50.0
+@export var outer_radius: float = 75.0
 @export var seg_count: int = 72
 @export var ring_color: Color = Color(0.2, 0.2, 0.2)  # Dark gray color
+@export var centripetal_force_factor: float = 0.013
 
 func _ready() -> void:
     super()
@@ -49,7 +50,14 @@ func is_point_inside(point: Vector2) -> bool:
 func get_push_vector(point: Vector2) -> Vector2:
     var local_point := to_local(point) - core_position
     var direction := local_point.normalized().rotated(PI/2)
-    return direction * max_push_force
+    var tangential_force := direction * max_push_force
+    
+    # 计算向心力
+    var centripetal_direction := -local_point.normalized()
+    var centripetal_force := centripetal_direction * max_push_force * centripetal_force_factor
+    
+    # 合并切向力和向心力
+    return tangential_force + centripetal_force
 
 func _draw() -> void:
     draw_arc(core_position, inner_radius, 0, TAU, 32, Color.BLUE, 2)

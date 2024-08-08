@@ -14,6 +14,12 @@ config/name="Summer Gamejam"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/mode=3
+window/stretch/mode="viewport"
+window/vsync/vsync_mode=0
+
 [input]
 
 toggle_mode={
@@ -39,3 +45,8 @@ ui_w={
 2d_physics/layer_3="Core"
 2d_physics/layer_4="StickyTrack"
 2d_physics/layer_5="StickyDetector"
+2d_physics/layer_6="Enemy"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0

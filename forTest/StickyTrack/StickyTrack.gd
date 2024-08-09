@@ -10,8 +10,8 @@ class_name StickyTrack
 # 最大推力
 @export var max_push_force: float = 100.0
 
-# 受此对象影响的其他 StickyTrack
-var affected_objects: Array[StickyTrack] = []
+# 受此对象影响的其他 StarTrack
+var affected_objects: Array[StarTrack] = []
 
 func _ready() -> void:
     add_to_group("StickyTracks")
@@ -36,9 +36,9 @@ func get_push_vector(point: Vector2) -> Vector2:
 # 更新受影响的对象列表
 func update_affected_objects() -> void:
     affected_objects.clear()
-    var objects = get_tree().get_nodes_in_group("StickyTrack")
+    var objects = get_tree().get_nodes_in_group("StarTrack")
     for obj in objects:
-        if obj != self and obj is StickyTrack and is_point_inside(obj.global_position + obj.core_position):
+        if obj != self and obj is StarTrack and is_point_inside(obj.global_position + obj.core_position):
             affected_objects.append(obj)
 
 # 应用推力到受影响的对象

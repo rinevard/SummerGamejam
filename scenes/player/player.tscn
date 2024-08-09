@@ -1,3 +1,44 @@
-[gd_scene format=3 uid="uid://cyw73o6j13kvq"]
+[gd_scene load_steps=7 format=3 uid="uid://uyyu7aeil6t2"]
 
-[node name="Player" type="CharacterBody2D"]
+[ext_resource type="Script" path="res://scripts/plyaer/player.gd" id="1_8nlxu"]
+[ext_resource type="Texture2D" uid="uid://dl837otvtuu3y" path="res://assets/Player/player-idle.png" id="2_0ba3v"]
+[ext_resource type="PackedScene" uid="uid://cr1x0p2ujkvjs" path="res://scenes/UIs/hud.tscn" id="3_jtcfn"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uxfyu"]
+size = Vector2(16.5, 19.5)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_b5jbv"]
+radius = 4.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3ojsj"]
+radius = 5.34374
+
+[node name="Player" type="CharacterBody2D" groups=["Player"]]
+collision_mask = 2
+script = ExtResource("1_8nlxu")
+
+[node name="PlayerSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_0ba3v")
+hframes = 4
+
+[node name="BoxCollision" type="CollisionShape2D" parent="."]
+position = Vector2(-0.25, 5.25)
+shape = SubResource("RectangleShape2D_uxfyu")
+
+[node name="StarDetector" type="Area2D" parent="."]
+collision_layer = 16
+collision_mask = 8
+
+[node name="DetectorCollision" type="CollisionShape2D" parent="StarDetector"]
+position = Vector2(0, 5)
+shape = SubResource("CircleShape2D_b5jbv")
+
+[node name="WallStuckDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="WallStuckDetector"]
+position = Vector2(0, 5)
+shape = SubResource("CircleShape2D_3ojsj")
+
+[node name="HUD" parent="." instance=ExtResource("3_jtcfn")]

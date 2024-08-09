@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://b3a1vh5tfoe2p"]
+
+[ext_resource type="Script" path="res://scripts/environment/star_tracks/ring_star_track.gd" id="1_6xu1k"]
+[ext_resource type="PackedScene" uid="uid://bmvmaymobl4ls" path="res://scenes/environment/star_tracks/base_star_track.tscn" id="1_ifnyk"]
+
+[node name="RingStarTrack" instance=ExtResource("1_ifnyk")]
+script = ExtResource("1_6xu1k")

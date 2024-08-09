@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bbhtpqjoeufy0"]
+
+[ext_resource type="PackedScene" uid="uid://bmvmaymobl4ls" path="res://scenes/environment/star_tracks/base_star_track.tscn" id="1_i0x08"]
+[ext_resource type="Script" path="res://scripts/environment/star_tracks/speed_star_track.gd" id="2_bju6s"]
+
+[node name="RectStarTrack" instance=ExtResource("1_i0x08")]
+script = ExtResource("2_bju6s")
+length = 100.0
+width = 30.0
+rotation_angle = 0.0

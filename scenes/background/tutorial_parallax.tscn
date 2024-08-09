@@ -1,0 +1,42 @@
+[gd_scene load_steps=4 format=3 uid="uid://becbabei2lgql"]
+
+[ext_resource type="Texture2D" uid="uid://00fjywursp5s" path="res://assets/Background/tutorial/sea_and_clouds.png" id="1_lly6r"]
+[ext_resource type="Texture2D" uid="uid://cxp1ap18dnkfd" path="res://assets/Background/tutorial/trees.png" id="2_bu6jb"]
+[ext_resource type="Texture2D" uid="uid://b7x6ssa8wer17" path="res://assets/Background/tutorial/sunny-mountains-far-back.png" id="2_hatks"]
+
+[node name="ParallaxBackground" type="ParallaxBackground"]
+
+[node name="Clouds" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.5, 0)
+motion_mirroring = Vector2(768, 0)
+
+[node name="TextureRect" type="TextureRect" parent="Clouds"]
+offset_right = 768.0
+offset_bottom = 240.0
+texture = ExtResource("1_lly6r")
+stretch_mode = 1
+
+[node name="Mountains" type="ParallaxLayer" parent="."]
+position = Vector2(8, -64)
+motion_scale = Vector2(0.7, 0)
+motion_mirroring = Vector2(768, 0)
+
+[node name="TextureRect" type="TextureRect" parent="Mountains"]
+offset_left = -15.0
+offset_top = 116.0
+offset_right = 1009.0
+offset_bottom = 340.0
+texture = ExtResource("2_hatks")
+stretch_mode = 1
+
+[node name="Trees" type="ParallaxLayer" parent="."]
+position = Vector2(0, 96)
+motion_scale = Vector2(0.7, 0.05)
+motion_mirroring = Vector2(880, 0)
+
+[node name="TextureRect" type="TextureRect" parent="Trees"]
+offset_top = 53.0
+offset_right = 880.0
+offset_bottom = 421.0
+texture = ExtResource("2_bu6jb")
+stretch_mode = 1

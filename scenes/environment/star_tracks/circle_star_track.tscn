@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3s85ifthw3p2"]
+
+[ext_resource type="PackedScene" uid="uid://bmvmaymobl4ls" path="res://scenes/environment/star_tracks/base_star_track.tscn" id="1_qh8lv"]
+[ext_resource type="Script" path="res://scripts/environment/star_tracks/circle_star_track.gd" id="2_8o5tx"]
+
+[node name="CircleStarTrack" instance=ExtResource("1_qh8lv")]
+script = ExtResource("2_8o5tx")

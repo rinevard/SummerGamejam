@@ -57,5 +57,3 @@ position = Vector2(1176, 306)
 zoom = Vector2(1.5, 1.5)
 limit_left = 0
 metadata/_edit_lock_ = true
-
-[connection signal="create_ring" from="Player" to="StarTrackHandler" method="_on_player_create_ring"]

@@ -7,7 +7,20 @@ const CORE_SPEED := 250.0
 const DASH_SPEED := 2000.0
 const PUSH_ADDITION_RATIO := 100
 const WALL_STUCK_THRESHOLD := 0.15
-const DEFAULT_WALL_STUCK_HELP_MOVE := 3.0 # 卡在墙里时默认的辅助移动距离
+const DEFAULT_WALL_STUCK_HELP_MOVE := 3.0  # 卡在墙里时默认的辅助移动距离
+const CLICKS_TO_BUILD_TRACK : Dictionary = {
+    GlobalEnums.TrackName.CircleTrack: 1,
+    GlobalEnums.TrackName.GravityCircleTrack: 1,
+    GlobalEnums.TrackName.RingTrack: 1,
+    GlobalEnums.TrackName.SpeedTrack: 1,
+    GlobalEnums.TrackName.SquareTrack: 2
+}
+const ACTION_TO_INDEX := {
+    "ui_q": 0,
+    "ui_w": 1,
+    "ui_e": 2,
+    "ui_r": 3
+}
 
 @export var item_arr: ItemArray
 
@@ -16,20 +29,71 @@ var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var _in_core_mode := false
 var _star_tracks : Array[StarTrack] = []
 var ignore_push := false  # 用于标记是否忽略推力
+var start_global_pos_for_square_track : Dictionary = {
+    "ui_q": null, 
+    "ui_w": null, 
+    "ui_e": null, 
+    "ui_r": null
+}
 
 # 跳跃相关变量
 var remaining_jumps := 2  # 剩余跳跃次数
 
 # 卡墙检测相关变量
 var wall_stuck_timer := 0.0
+enum TrackName {
+    CircleTrack,
+    GravityCircleTrack, 
+    RingTrack,
+    SpeedTrack, 
+    SquareTrack
+}
 
-signal create_ring(global_pos: Vector2)
-signal create_square()
+signal remove_track(action: String)
+# 这几个create_track发给handler提醒它创建星轨
+signal create_circle_track(action: String, global_pos: Vector2)
+signal create_gravity_circle_track(action: String, global_pos: Vector2)
+signal create_ring_track(action: String, global_pos: Vector2)
+signal create_speed_track(action: String, global_pos: Vector2, direction: Vector2) # 角度而非弧度
+signal create_square_track(action: String, st_global_pos: Vector2, ed_global_pos: Vector2)
+signal _item_arr_updated() # 发给HUD提醒它更新道具显示
 
 @onready var _star_detector: Area2D = $StarDetector
 @onready var _player_collision: CollisionShape2D = $BoxCollision
 @onready var _wall_detector: Area2D = $WallStuckDetector
 @onready var _hud: CanvasLayer = $HUD
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 func _ready() -> void:
     _star_detector.area_entered.connect(_on_star_detector_area_entered)
@@ -49,27 +113,79 @@ func _physics_process(delta: float) -> void:
     move_and_slide()
     _check_item_usage()
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 func _check_item_usage() -> void:
-    var item_actions := {
-        "ui_q": 0,
-        "ui_w": 1,
-        "ui_e": 2,
-        "ui_r": 3
-    }
-    
-    for action in item_actions:
+    for action in ACTION_TO_INDEX:
         if Input.is_action_just_pressed(action):
-            var idx : int = item_actions[action]
-            if item_arr and item_arr.has_item(idx):
-                item_arr.use_item(idx)
-                var item_name := item_arr.get_item_name(idx)
-                var item_used_times := item_arr.get_item_used_times(idx)
-                _use_item(action, item_name, item_used_times)
+            var item_idx : int = ACTION_TO_INDEX[action]
+            if item_arr and item_arr.has_item(item_idx):
+                _use_item(action)
             break
 
-func _use_item(key: String, item_name: String, used_times: int) -> void:
-    # TODO: Implement item usage logic
-    print("Used item: %s (Key: %s, Used times: %d)" % [item_name, key, used_times])
+func _use_item(action: String) -> void:
+    var item_idx : int = ACTION_TO_INDEX[action]
+    var item_name : GlobalEnums.TrackName = item_arr.get_item_name(item_idx)
+    var clicked_times : int = item_arr.get_item_clicked_times(item_idx)
+    
+    if clicked_times == CLICKS_TO_BUILD_TRACK[item_name]:
+        # Track has been built, remove it
+        print("removing...")
+        item_arr.remove_item(item_idx)
+        emit_signal("remove_track", action)
+        start_global_pos_for_square_track[action] = null
+        return
+    
+    match item_name:
+        GlobalEnums.TrackName.CircleTrack:
+            emit_signal("create_circle_track", action, global_position)
+        GlobalEnums.TrackName.GravityCircleTrack:
+            emit_signal("create_gravity_circle_track", action, global_position)
+        GlobalEnums.TrackName.RingTrack:
+            emit_signal("create_ring_track", action, global_position)
+        GlobalEnums.TrackName.SpeedTrack:
+            var direction = Vector2.RIGHT.rotated(rotation)
+            emit_signal("create_speed_track", action, global_position, direction)
+        GlobalEnums.TrackName.SquareTrack:
+            if clicked_times == 0:
+                start_global_pos_for_square_track[action] = global_position
+            elif clicked_times == 1:
+                var start_pos = start_global_pos_for_square_track[action]
+                if start_pos:
+                    emit_signal("create_square_track", action, start_pos, global_position)
+                    start_global_pos_for_square_track[action] = null
+    
+    print("Used item: %s (action: %s, Used times: %d)" % [item_name, action, clicked_times])
+    item_arr.use_item(item_idx)
+    return 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 func _initialize_normal_mode() -> void:
     _in_core_mode = false

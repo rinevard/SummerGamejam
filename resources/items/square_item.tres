@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="Item" load_steps=2 format=3 uid="uid://b58ob8qnanlag"]
+
+[ext_resource type="Script" path="res://resources/items/item.gd" id="1_ojl1m"]
+
+[resource]
+resource_local_to_scene = true
+script = ExtResource("1_ojl1m")
+name = 4
+clicked_times = 0

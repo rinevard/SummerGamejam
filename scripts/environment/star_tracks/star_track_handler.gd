@@ -13,7 +13,8 @@ var ring_star_track = preload("res://scenes/environment/star_tracks/ring_star_tr
 func _ready():
     pass
 
-func create_ring_star_track(key: String, global_pos: Vector2, 
+func create_ring_star_track(key: String, 
+                            global_pos: Vector2, 
                             inner_rad: float=inner_radius, 
                             outer_rad: float=outer_radius, 
                             seg: int=seg_count, 

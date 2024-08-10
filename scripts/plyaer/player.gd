@@ -49,6 +49,9 @@ enum TrackName {
     SquareTrack
 }
 
+# 连接HUD
+signal player_health_changed(new_health: int)
+# 这个信号发给handler提醒它移除星轨
 signal remove_track(action: String)
 # 这几个create_track发给handler提醒它创建星轨
 signal create_circle_track(action: String, global_pos: Vector2)
@@ -56,7 +59,7 @@ signal create_gravity_circle_track(action: String, global_pos: Vector2)
 signal create_ring_track(action: String, global_pos: Vector2)
 signal create_speed_track(action: String, global_pos: Vector2, direction: Vector2) # 角度而非弧度
 signal create_square_track(action: String, st_global_pos: Vector2, ed_global_pos: Vector2)
-signal _item_arr_updated() # 发给HUD提醒它更新道具显示
+signal item_arr_updated() # 发给HUD提醒它更新道具显示
 
 @onready var _star_detector: Area2D = $StarDetector
 @onready var _player_collision: CollisionShape2D = $BoxCollision
@@ -99,6 +102,7 @@ func _ready() -> void:
     _star_detector.area_entered.connect(_on_star_detector_area_entered)
     _star_detector.area_exited.connect(_on_star_detector_area_exited)
     call_deferred("_initialize_normal_mode")
+    test_ready()
 
 func _physics_process(delta: float) -> void:
     if _in_core_mode:
@@ -117,8 +121,19 @@ func _physics_process(delta: float) -> void:
 
 
 
-
-
+func test_ready():
+    var circle_item = preload("res://resources/items/circle_item.tres")
+    var gravity_item = preload("res://resources/items/gravity_item.tres")
+    var ring_item = preload("res://resources/items/ring_item.tres")
+    var speed_item = preload("res://resources/items/speed_item.tres")
+    var square_item = preload("res://resources/items/square_item.tres")
+    _add_item(ring_item.duplicate())
+    _add_item(square_item.duplicate())
+    _add_item(square_item.duplicate())
+    _add_item(square_item.duplicate())
+    _add_item(ring_item.duplicate())
+    _remove_item("ui_w")
+    emit_signal("item_arr_updated")
 
 
 
@@ -136,16 +151,31 @@ func _check_item_usage() -> void:
                 _use_item(action)
             break
 
+func _remove_item(action: String):
+    """
+    action should in ["ui_q", "ui_w", "ui_e", "ui_r"]
+    """
+    var item_idx: int = ACTION_TO_INDEX[action]
+    assert((item_arr.has_item(item_idx)), "no item here!")
+    item_arr.remove_item(item_idx)
+    emit_signal("item_arr_updated")
+    emit_signal("remove_track", action)
+
+func _add_item(item: Item):
+    item_arr.add_item(item.duplicate())
+    emit_signal("item_arr_updated")
+
 func _use_item(action: String) -> void:
     var item_idx : int = ACTION_TO_INDEX[action]
+    if (!item_arr.has_item(item_idx)):
+        return
     var item_name : GlobalEnums.TrackName = item_arr.get_item_name(item_idx)
     var clicked_times : int = item_arr.get_item_clicked_times(item_idx)
     
     if clicked_times == CLICKS_TO_BUILD_TRACK[item_name]:
         # Track has been built, remove it
         print("removing...")
-        item_arr.remove_item(item_idx)
-        emit_signal("remove_track", action)
+        _remove_item(action)
         start_global_pos_for_square_track[action] = null
         return
     
@@ -157,7 +187,7 @@ func _use_item(action: String) -> void:
         GlobalEnums.TrackName.RingTrack:
             emit_signal("create_ring_track", action, global_position)
         GlobalEnums.TrackName.SpeedTrack:
-            var direction = Vector2.RIGHT.rotated(rotation)
+            var direction = get_place_track_direction()
             emit_signal("create_speed_track", action, global_position, direction)
         GlobalEnums.TrackName.SquareTrack:
             if clicked_times == 0:
@@ -170,22 +200,23 @@ func _use_item(action: String) -> void:
     
     print("Used item: %s (action: %s, Used times: %d)" % [item_name, action, clicked_times])
     item_arr.use_item(item_idx)
+    emit_signal("item_arr_updated")
     return 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+func get_place_track_direction() -> Vector2:
+    var input_vector = Vector2.ZERO
+    input_vector.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+    input_vector.y = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
+    
+    if input_vector != Vector2.ZERO:
+        # 如果有输入，使用输入方向
+        return input_vector.normalized()
+    elif velocity != Vector2.ZERO:
+        # 如果正在移动，使用当前移动方向
+        return velocity.normalized()
+    else:
+        # 如果静止，使用面朝方向（这里假设 rotation 表示面朝方向）
+        return Vector2.RIGHT.rotated(rotation)
 
 func _initialize_normal_mode() -> void:
     _in_core_mode = false

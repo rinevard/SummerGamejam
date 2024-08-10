@@ -14,3 +14,6 @@ func get_item_name() -> GlobalEnums.TrackName:
 
 func get_clicked_times() -> int:
     return clicked_times
+
+func get_item_texture() -> Texture:
+    return icon

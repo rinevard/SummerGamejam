@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://bco2m326qywtf"]
+
+[ext_resource type="Script" path="res://resources/items/item.gd" id="1_1fyk0"]
+[ext_resource type="Texture2D" uid="uid://b2c8ic850pcfm" path="res://assets/UI/items/speed.png" id="1_vx51i"]
+
+[resource]
+script = ExtResource("1_1fyk0")
+name = 3
+icon = ExtResource("1_vx51i")
+clicked_times = 0

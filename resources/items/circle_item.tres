@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://qvr5e2jl32xv"]
+
+[ext_resource type="Texture2D" uid="uid://cb78j8qwnwoun" path="res://assets/UI/items/circle.png" id="1_ugvpm"]
+[ext_resource type="Script" path="res://resources/items/item.gd" id="1_yxpiy"]
+
+[resource]
+script = ExtResource("1_yxpiy")
+name = 0
+icon = ExtResource("1_ugvpm")
+clicked_times = 0

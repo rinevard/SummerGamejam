@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="Item" load_steps=2 format=3 uid="uid://b58ob8qnanlag"]
+[gd_resource type="Resource" script_class="Item" load_steps=3 format=3 uid="uid://b58ob8qnanlag"]
 
+[ext_resource type="Texture2D" uid="uid://bwt7qk4jcn57d" path="res://assets/UI/items/square.png" id="1_efjd3"]
 [ext_resource type="Script" path="res://resources/items/item.gd" id="1_ojl1m"]
 
 [resource]
 resource_local_to_scene = true
 script = ExtResource("1_ojl1m")
 name = 4
+icon = ExtResource("1_efjd3")
 clicked_times = 0

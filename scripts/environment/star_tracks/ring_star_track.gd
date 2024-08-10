@@ -22,7 +22,7 @@ func _ready() -> void:
     create_circle_ring()
 
 
-func setup(inner_rad: float, outer_rad: float, seg: int, color: Color, force: float) -> void:
+func setup(inner_rad: float, outer_rad: float, seg: int, color: Color) -> void:
     """
     设置圆环的参数
     
@@ -31,13 +31,11 @@ func setup(inner_rad: float, outer_rad: float, seg: int, color: Color, force: fl
         outer_rad (float): 外半径
         seg (int): 分段数
         color (Color): 圆环颜色
-        force (float): 向心力因子
     """
     inner_radius = inner_rad
     outer_radius = outer_rad
     seg_count = seg
     ring_color = color
-    centripetal_force_factor = force
     return
 
 

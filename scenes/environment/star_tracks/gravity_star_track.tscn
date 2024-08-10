@@ -1,0 +1,7 @@
+[gd_scene load_steps=3 format=3 uid="uid://6oqqoej7jgwx"]
+
+[ext_resource type="PackedScene" uid="uid://bmvmaymobl4ls" path="res://scenes/environment/star_tracks/base_star_track.tscn" id="1_t56jm"]
+[ext_resource type="Script" path="res://scripts/environment/star_tracks/gravity_star_track.gd" id="2_1aiwm"]
+
+[node name="GravityStarTrack" instance=ExtResource("1_t56jm")]
+script = ExtResource("2_1aiwm")

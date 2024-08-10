@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://b543chexdkxjt"]
+[gd_scene load_steps=5 format=3 uid="uid://b543chexdkxjt"]
 
 [ext_resource type="TileSet" uid="uid://cqrmhj7uru5jm" path="res://scenes/levels/land_tile_map.tres" id="1_mjacq"]
 [ext_resource type="PackedScene" uid="uid://bwhbtcf3gwdwc" path="res://scenes/environment/star_tracks/star_track_handler.tscn" id="2_gw88b"]
 [ext_resource type="PackedScene" uid="uid://uyyu7aeil6t2" path="res://scenes/player/player.tscn" id="3_bg4c3"]
-[ext_resource type="Resource" uid="uid://cllhn2asyauq4" path="res://resources/itemlist/new_resource.tres" id="4_a8k21"]
 [ext_resource type="PackedScene" uid="uid://becbabei2lgql" path="res://scenes/background/tutorial_parallax.tscn" id="4_w8q46"]
 
 [node name="TestLevel" type="Node2D"]
@@ -17,10 +16,16 @@ layer_0/tile_data = PackedInt32Array(1638408, 0, 0, 1638409, 0, 0, 1638410, 0, 0
 
 [node name="Player" parent="." instance=ExtResource("3_bg4c3")]
 position = Vector2(370, 370)
-item_arr = ExtResource("4_a8k21")
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 position = Vector2(7, -8)
 zoom = Vector2(1.5, 1.5)
 
 [node name="ParallaxBackground" parent="." instance=ExtResource("4_w8q46")]
+
+[connection signal="create_circle_track" from="Player" to="StarTrackHandler" method="_on_player_create_circle_track"]
+[connection signal="create_gravity_circle_track" from="Player" to="StarTrackHandler" method="_on_player_create_gravity_circle_track"]
+[connection signal="create_ring_track" from="Player" to="StarTrackHandler" method="_on_player_create_ring_track"]
+[connection signal="create_speed_track" from="Player" to="StarTrackHandler" method="_on_player_create_speed_track"]
+[connection signal="create_square_track" from="Player" to="StarTrackHandler" method="_on_player_create_square_track"]
+[connection signal="remove_track" from="Player" to="StarTrackHandler" method="_on_player_remove_track"]

@@ -40,3 +40,16 @@ func get_item_clicked_times(idx: int) -> int:
         return item_arr[idx].get_clicked_times()
     print("no item here!")
     return 0
+
+func get_item_texture(idx: int) -> Texture:
+    if has_item(idx):
+        return item_arr[idx].get_item_texture()
+    return null
+
+func is_fully_used(idx: int) -> bool:
+    if has_item(idx):
+        if (get_item_name(idx) == GlobalEnums.TrackName.SquareTrack):
+            return get_item_clicked_times(idx) >= 2
+        elif (get_item_name(idx) != GlobalEnums.TrackName.NONE):
+            return get_item_clicked_times(idx) >= 1
+    return false

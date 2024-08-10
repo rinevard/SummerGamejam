@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://uyyu7aeil6t2"]
+[gd_scene load_steps=8 format=3 uid="uid://uyyu7aeil6t2"]
 
 [ext_resource type="Script" path="res://scripts/plyaer/player.gd" id="1_8nlxu"]
 [ext_resource type="Texture2D" uid="uid://dl837otvtuu3y" path="res://assets/Player/player-idle.png" id="2_0ba3v"]
+[ext_resource type="Resource" uid="uid://cllhn2asyauq4" path="res://resources/itemlist/empty_item_arr.tres" id="2_cioig"]
 [ext_resource type="PackedScene" uid="uid://cr1x0p2ujkvjs" path="res://scenes/UIs/hud.tscn" id="3_jtcfn"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uxfyu"]
@@ -16,6 +17,7 @@ radius = 5.34374
 [node name="Player" type="CharacterBody2D" groups=["Player"]]
 collision_mask = 2
 script = ExtResource("1_8nlxu")
+item_arr = ExtResource("2_cioig")
 
 [node name="PlayerSprite" type="Sprite2D" parent="."]
 texture = ExtResource("2_0ba3v")
@@ -42,3 +44,6 @@ position = Vector2(0, 5)
 shape = SubResource("CircleShape2D_3ojsj")
 
 [node name="HUD" parent="." instance=ExtResource("3_jtcfn")]
+
+[connection signal="item_arr_updated" from="." to="HUD" method="_on_item_arr_updated"]
+[connection signal="player_health_changed" from="." to="HUD" method="_on_player_health_changed"]

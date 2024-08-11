@@ -10,8 +10,8 @@ class_name RectStarTrack
 # 长方形的旋转角度（度）
 @export var rotation_angle: float = 0.0
 
-# 长方形的颜色
-var rect_color: Color = Color(0.2, 0.2, 0.2)  # 深灰色
+# 长方形的颜色（半透明）
+var rect_color: Color = Color(0.2, 0.2, 0.2, 0.5)  # 深灰色，50% 透明度
 
 func _ready() -> void:
     super()
@@ -54,6 +54,10 @@ func create_rectangle() -> void:
     polygon.color = rect_color
     polygon.antialiased = true
     polygon.set_polygon(points)
+    
+    # 确保 Polygon2D 支持透明度
+    polygon.use_parent_material = false
+    
     add_child(polygon)
 
     var col_polygon := CollisionPolygon2D.new()
@@ -100,10 +104,10 @@ func _draw() -> void:
     # 绘制填充的多边形
     draw_colored_polygon(points, rect_color)
     
-    # 绘制轮廓
+    # 绘制轮廓（使用半透明的蓝色）
     var outline_points = points  # 创建一个新的 PackedVector2Array
     outline_points.append(points[0])  # 添加起始点以闭合多边形
-    draw_polyline(outline_points, Color.BLUE, 2)
+    draw_polyline(outline_points, Color(Color.BLUE, 0.5), 2)
     
     # 绘制中心点
     draw_circle(core_position, 5, Color.RED)

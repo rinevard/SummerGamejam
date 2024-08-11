@@ -1,6 +1,21 @@
 extends CharacterBody2D
 class_name Player
 
+# 连接enemy_handler
+signal player_position_changed(global_pos: Vector2)
+# 连接HUD
+signal player_health_changed(new_health: int)
+# 这个信号发给handler提醒它移除星轨
+signal remove_track(action: String)
+# 这几个create_track发给handler提醒它创建星轨
+signal create_circle_track(action: String, global_pos: Vector2)
+signal create_gravity_circle_track(action: String, global_pos: Vector2)
+signal create_ring_track(action: String, global_pos: Vector2)
+signal create_speed_track(action: String, global_pos: Vector2, direction: Vector2) # 角度而非弧度
+signal create_square_track(action: String, st_global_pos: Vector2, ed_global_pos: Vector2)
+signal item_arr_updated() # 发给HUD提醒它更新道具显示
+signal score_updated(new_score: int) # 发给HUD提醒它更新分数显示
+
 const SPEED := 200.0
 const JUMP_VELOCITY := -400.0
 const CORE_SPEED := 250.0
@@ -23,7 +38,12 @@ const ACTION_TO_INDEX := {
 }
 
 @export var item_arr: ItemArray
+@export var death_menu: DeathMenu
 
+var is_alive: bool = true
+var cannot_be_attacked: bool = false
+var cannot_move: bool = false
+var player_health : int = 8
 var wall_stuck_help_move : float = DEFAULT_WALL_STUCK_HELP_MOVE
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var _in_core_mode := false
@@ -41,107 +61,106 @@ var remaining_jumps := 2  # 剩余跳跃次数
 
 # 卡墙检测相关变量
 var wall_stuck_timer := 0.0
-enum TrackName {
-    CircleTrack,
-    GravityCircleTrack, 
-    RingTrack,
-    SpeedTrack, 
-    SquareTrack
-}
 
-# 连接HUD
-signal player_health_changed(new_health: int)
-# 这个信号发给handler提醒它移除星轨
-signal remove_track(action: String)
-# 这几个create_track发给handler提醒它创建星轨
-signal create_circle_track(action: String, global_pos: Vector2)
-signal create_gravity_circle_track(action: String, global_pos: Vector2)
-signal create_ring_track(action: String, global_pos: Vector2)
-signal create_speed_track(action: String, global_pos: Vector2, direction: Vector2) # 角度而非弧度
-signal create_square_track(action: String, st_global_pos: Vector2, ed_global_pos: Vector2)
-signal item_arr_updated() # 发给HUD提醒它更新道具显示
+# 受伤相关变量
+var in_danger_zone = false
+var hurt_cooldown = 1.0  # 受伤冷却时间（秒）
+var hurt_timer = 0.0
 
+# 击退相关变量
+var knockback_force : float = 500.0
+var hurt_color : Color = Color(1, 0, 0, 0.5)  # 半透明红色
+var normal_color : Color = Color(1, 1, 1, 1)  # 正常颜色（白色）
+
+# 分数相关变量
+var score_pop_up = preload("res://scenes/UIs/score_pop.tscn")
+var enemy_score: int = 10
+var flower_score: int = 20
+var current_score: int = 0
+
+# normal_mode: 静止idle, 掉落fall, 跳jump, 跑run core_mode: 动climb, 不动wait_on_wall 
+@onready var _animation_player: AnimationPlayer = $AnimationPlayer
+@onready var _player_sprite: Sprite2D = $PlayerSprite
 @onready var _star_detector: Area2D = $StarDetector
 @onready var _player_collision: CollisionShape2D = $BoxCollision
 @onready var _wall_detector: Area2D = $WallStuckDetector
 @onready var _hud: CanvasLayer = $HUD
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+@onready var _player_stomp: Area2D = $StarDetector
+@onready var _flower_detector: Area2D = $FlowerDetector
+@onready var _score_pop_container: VBoxContainer = $ScorePopContainer
 
 func _ready() -> void:
+    _clear_items()
+    _update_health(player_health)
+    _change_score(0)
+    add_to_group("Player")
+    _flower_detector.add_to_group("FlowerDetector")
+    _player_stomp.add_to_group("PlayerStomp")
     _star_detector.area_entered.connect(_on_star_detector_area_entered)
     _star_detector.area_exited.connect(_on_star_detector_area_exited)
     call_deferred("_initialize_normal_mode")
-    test_ready()
 
 func _physics_process(delta: float) -> void:
+    if !is_alive:
+        return
+    
+    process_continuous_damage(delta)
     if _in_core_mode:
-        _core_move()
+        _core_move(delta)
+        _update_core_animation()
+    elif cannot_move:  # 添加这个条件来检查是否处于受伤状态
+        _hurt_move(delta)
+        _update_hurt_animation() 
     else:
         _normal_move(delta)
         _check_wall_stuck(delta)
-    
-    if not ignore_push:  # 只在不忽略推力时应用轨道力
-        _apply_star_track_forces(delta)
-    
+        _update_normal_animation()
     move_and_slide()
     _check_item_usage()
+    emit_signal("player_position_changed", global_position)
 
+func _update_normal_animation() -> void:
+    if velocity.x != 0:
+        _player_sprite.flip_h = velocity.x < 0
+    if is_on_floor():
+        if abs(velocity.x) > 0.1:
+            _animation_player.play("run")
+        else:
+            _animation_player.play("idle")
+    else:
+        if velocity.y < 0:
+            _animation_player.play("jump")
+        else:
+            _animation_player.play("fall")
 
+func _update_core_animation() -> void:
+    var speed = velocity.length()
+    if speed > 0.1:
+        _animation_player.play("climb")
+        # 计算动画播放速度，可以根据需要调整系数
+        var animation_speed = clamp(speed / 100.0, 0.5, 2.0)
+        _animation_player.set_speed_scale(animation_speed)
+    else:
+        _animation_player.play("wait_on_wall")
+        _animation_player.set_speed_scale(1.0)  # 重置为正常速度
 
+func _update_hurt_animation() -> void:
+    _animation_player.play("hurt")
 
-
-func test_ready():
-    var circle_item = preload("res://resources/items/circle_item.tres")
-    var gravity_item = preload("res://resources/items/gravity_item.tres")
-    var ring_item = preload("res://resources/items/ring_item.tres")
-    var speed_item = preload("res://resources/items/speed_item.tres")
-    var square_item = preload("res://resources/items/square_item.tres")
-    _add_item(ring_item.duplicate())
-    _add_item(square_item.duplicate())
-    _add_item(square_item.duplicate())
-    _add_item(square_item.duplicate())
-    _add_item(ring_item.duplicate())
-    _remove_item("ui_w")
-    emit_signal("item_arr_updated")
-
-
-
-
-
-
-
-
+func random_get_item():
+    var items = [
+        preload("res://resources/items/circle_item.tres"),
+        preload("res://resources/items/gravity_item.tres"),
+        preload("res://resources/items/ring_item.tres"),
+        preload("res://resources/items/speed_item.tres"),
+        preload("res://resources/items/square_item.tres")
+    ]
+    
+    # 随机选择一个道具
+    var random_item = items[randi() % items.size()]
+    
+    # 添加随机选择的道具
+    _add_item(random_item.duplicate())
 
 func _check_item_usage() -> void:
     for action in ACTION_TO_INDEX:
@@ -151,12 +170,13 @@ func _check_item_usage() -> void:
                 _use_item(action)
             break
 
-func _remove_item(action: String):
+func _remove_item(action: String) -> void:
     """
     action should in ["ui_q", "ui_w", "ui_e", "ui_r"]
     """
     var item_idx: int = ACTION_TO_INDEX[action]
-    assert((item_arr.has_item(item_idx)), "no item here!")
+    if (!item_arr.has_item(item_idx)):
+        return
     item_arr.remove_item(item_idx)
     emit_signal("item_arr_updated")
     emit_signal("remove_track", action)
@@ -225,12 +245,20 @@ func _initialize_normal_mode() -> void:
     print("Initialized in normal mode")
 
 func _normal_move(delta: float) -> void:
+    var jump_timer: SceneTreeTimer
     if is_on_floor():
         remaining_jumps = 2
+        if jump_timer:
+            jump_timer.time_left = 0
     else:
         velocity.y += gravity * delta
         if remaining_jumps > 1:
-            remaining_jumps = 1
+            if not jump_timer or jump_timer.time_left <= 0:
+                jump_timer = get_tree().create_timer(0.3) # 设置0.5秒延时，土狼跳
+                jump_timer.connect("timeout", func():
+                    if not is_on_floor() and remaining_jumps > 1:
+                        remaining_jumps = 1
+                )
 
     if Input.is_action_just_pressed("ui_accept") and remaining_jumps > 0:
         velocity.y = JUMP_VELOCITY
@@ -239,7 +267,7 @@ func _normal_move(delta: float) -> void:
     var direction := Input.get_axis("ui_left", "ui_right")
     velocity.x = direction * SPEED if direction else move_toward(velocity.x, 0, SPEED)
 
-func _core_move() -> void:
+func _core_move(delta: float) -> void:
     var direction := Vector2(
         Input.get_axis("ui_left", "ui_right"),
         Input.get_axis("ui_up", "ui_down")
@@ -249,6 +277,15 @@ func _core_move() -> void:
     ignore_push = Input.is_action_pressed("ui_accept")
     if ignore_push:
         velocity /= 5.0
+    
+    if not ignore_push:  # 只在不忽略推力时应用轨道力
+        _apply_star_track_forces(delta)
+    
+
+func _hurt_move(delta: float) -> void:
+    # 在受伤状态下，我们可以让玩家无法控制移动，只是让其按照被击退的方向移动
+    velocity.y += gravity * delta  # 添加重力影响
+    velocity.x = move_toward(velocity.x, 0, SPEED * 0.1)  # 缓慢减少水平速度
 
 func _apply_star_track_forces(delta: float) -> void:
     var total_push_vector := Vector2.ZERO
@@ -289,6 +326,41 @@ func _place_star_ring() -> void:
     emit_signal("create_ring", global_position)
     print("Ring created at", global_position)
 
+func _update_health(new_health: int) -> void:
+    player_health = new_health
+    emit_signal("player_health_changed", player_health)
+    if (player_health <= 0):
+        die()
+
+func _be_hurt(attacker_position: Vector2) -> void:
+    if cannot_be_attacked:
+        return
+    _update_health(player_health - 1)
+    cannot_be_attacked = true
+    cannot_move = true
+    
+    # 击退效果
+    var knockback_direction = global_position - attacker_position
+    print(knockback_direction)
+    velocity = knockback_direction.normalized() * knockback_force
+    
+    # 变红效果
+    modulate = hurt_color
+    
+    var movability_timer = get_tree().create_timer(0.5)
+    movability_timer.timeout.connect(_reset_movability)
+
+    # 创建一个定时器来1秒后重置无敌状态和颜色
+    var timer = get_tree().create_timer(1.0)
+    timer.timeout.connect(_reset_invincibility)
+
+func _reset_movability() -> void:
+    cannot_move = false
+
+func _reset_invincibility() -> void:
+    cannot_be_attacked = false
+    modulate = normal_color
+
 func _check_wall_stuck(delta: float) -> void:
     if _wall_detector.has_overlapping_bodies():
         wall_stuck_timer += delta
@@ -305,3 +377,58 @@ func _handle_wall_stuck() -> void:
                         randf_range(-wall_stuck_help_move, wall_stuck_help_move))
     velocity = Vector2.ZERO # 避免计算重力 
     print("Handled wall stuck")
+
+func _on_flower_handler_item_collected(item:Item, _global_pos: Vector2):
+    _add_item(item)
+    _get_score(flower_score)
+
+func _on_stomp_detector_area_entered(_area: Area2D) -> void:
+    velocity.y = JUMP_VELOCITY  # 对玩家施加向上的冲量
+    remaining_jumps = 1
+    _get_score(enemy_score)
+
+func _on_hurt_detector_area_entered(area: Area2D):
+    in_danger_zone = true
+    _be_hurt(area.global_position)  # 立即造成第一次伤害
+    hurt_timer = 0.0  # 重置计时器，为下一次伤害做准备
+
+func _on_hurt_detector_area_exited(_area: Area2D):
+    in_danger_zone = false
+    hurt_timer = 0.0
+
+func process_continuous_damage(delta: float):
+    if in_danger_zone and not cannot_be_attacked:
+        hurt_timer += delta
+        if hurt_timer >= hurt_cooldown:
+            _be_hurt(global_position)  # 使用玩家自身位置，因为没有具体的攻击者
+            hurt_timer = 0.0  # 重置计时器
+
+func _change_score(new_score: int) -> void:
+    current_score = new_score
+    emit_signal("score_updated", current_score)
+    return
+
+func _get_score(bonus_score: int):
+    _change_score(current_score + bonus_score)
+    var score_pop: PopScore = score_pop_up.instantiate()
+    score_pop.set_score(bonus_score)
+    _score_pop_container.add_child(score_pop)
+
+func _clear_items() -> void:
+    _remove_item("ui_q")
+    _remove_item("ui_w")
+    _remove_item("ui_e")
+    _remove_item("ui_r")
+
+
+
+func die() -> void:
+    _clear_items()
+    # 播放死亡动画
+    is_alive = false
+    _animation_player.play("hurt")
+    await _animation_player.animation_finished
+    Engine.time_scale = 0
+    death_menu.show()
+    # 切换场景
+    return

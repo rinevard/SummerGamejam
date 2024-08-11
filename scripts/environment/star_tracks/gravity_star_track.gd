@@ -3,15 +3,17 @@ class_name GravityStarTrack
 
 var radius: float = 100.0 
 var seg_count: int = 72
-var circle_color: Color = Color(0.2, 0.2, 0.2)  # 深灰色
+var circle_color: Color = Color(0.2, 0.2, 0.2, 0.5)  # 深灰色，50% 透明度
+var centripetal_force: float = 100.0
 
 func _ready() -> void:
     super()
     create_solid_circle()
 
-func setup(rad: float, seg: int, color: Color) -> void:
+func setup(rad: float, seg: int, force: float, color: Color) -> void:
     radius = rad
     seg_count = seg
+    centripetal_force = force
     circle_color = color
     create_solid_circle()
 
@@ -29,6 +31,10 @@ func create_solid_circle() -> void:
     polygon.color = circle_color
     polygon.antialiased = true
     polygon.set_polygon(points)
+    
+    # 确保 Polygon2D 支持透明度
+    polygon.use_parent_material = false
+    
     add_child(polygon)
 
     var col_polygon := CollisionPolygon2D.new()
@@ -47,7 +53,7 @@ func get_push_vector(point: Vector2) -> Vector2:
     if distance <= radius:
         # 计算向心力
         var direction := -local_point.normalized()  # 朝向圆心的单位向量
-        var force := max_push_force * (1 - distance / radius)  # 力随距离线性减小
+        var force := centripetal_force * (1 - distance / radius)  # 力随距离线性减小
         return direction * force
     else:
         return Vector2.ZERO

@@ -5,7 +5,7 @@ const full_heart_frame := 0
 const half_heart_frame := 1
 const empty_heart_frame := 2
 
-var total_hearts := 3
+var total_hearts := 4
 var health : int
 var single_heart = preload("res://scenes/UIs/heart.tscn")  # Panel
 

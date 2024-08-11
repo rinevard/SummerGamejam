@@ -21,6 +21,12 @@ offset_bottom = 40.0
 [node name="HeartList" parent="VBoxContainer" instance=ExtResource("1_hdmb5")]
 layout_mode = 2
 
+[node name="ScoreLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+text = "Hello, world"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
@@ -40,6 +46,16 @@ visible = false
 layout_mode = 2
 text = "已用"
 
+[node name="Container" type="Container" parent="VBoxContainer/VBoxContainer/QContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/QContainer/Container"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "Q"
+
 [node name="WContainer" type="CenterContainer" parent="VBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(88, 64)
 layout_mode = 2
@@ -55,6 +71,16 @@ expand_mode = 1
 visible = false
 layout_mode = 2
 text = "已用"
+
+[node name="Container" type="Container" parent="VBoxContainer/VBoxContainer/WContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/WContainer/Container"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "W"
 
 [node name="EContainer" type="CenterContainer" parent="VBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(88, 64)
@@ -72,6 +98,16 @@ visible = false
 layout_mode = 2
 text = "已用"
 
+[node name="Container" type="Container" parent="VBoxContainer/VBoxContainer/EContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/EContainer/Container"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "E"
+
 [node name="RContainer" type="CenterContainer" parent="VBoxContainer/VBoxContainer"]
 custom_minimum_size = Vector2(88, 64)
 layout_mode = 2
@@ -87,3 +123,13 @@ expand_mode = 1
 visible = false
 layout_mode = 2
 text = "已用"
+
+[node name="Container" type="Container" parent="VBoxContainer/VBoxContainer/RContainer"]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VBoxContainer/RContainer/Container"]
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+text = "R"

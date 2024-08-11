@@ -8,35 +8,47 @@
 
 [node name="Clouds" type="ParallaxLayer" parent="."]
 motion_scale = Vector2(0.5, 0)
-motion_mirroring = Vector2(768, 0)
+motion_mirroring = Vector2(1536, 0)
 
 [node name="TextureRect" type="TextureRect" parent="Clouds"]
-offset_right = 768.0
+offset_right = 1536.0
 offset_bottom = 240.0
 texture = ExtResource("1_lly6r")
 stretch_mode = 1
 
 [node name="Mountains" type="ParallaxLayer" parent="."]
 position = Vector2(8, -64)
-motion_scale = Vector2(0.7, 0)
-motion_mirroring = Vector2(768, 0)
+motion_scale = Vector2(0.65, 0)
+motion_mirroring = Vector2(2048, 0)
 
 [node name="TextureRect" type="TextureRect" parent="Mountains"]
 offset_left = -15.0
 offset_top = 116.0
-offset_right = 1009.0
+offset_right = 2033.0
 offset_bottom = 340.0
 texture = ExtResource("2_hatks")
 stretch_mode = 1
 
-[node name="Trees" type="ParallaxLayer" parent="."]
-position = Vector2(0, 96)
+[node name="Trees2" type="ParallaxLayer" parent="."]
+position = Vector2(0, 256)
 motion_scale = Vector2(0.7, 0.05)
-motion_mirroring = Vector2(880, 0)
+motion_mirroring = Vector2(2640, 0)
+
+[node name="TextureRect" type="TextureRect" parent="Trees2"]
+offset_top = 53.0
+offset_right = 2640.0
+offset_bottom = 421.0
+texture = ExtResource("2_bu6jb")
+stretch_mode = 1
+
+[node name="Trees" type="ParallaxLayer" parent="."]
+position = Vector2(0, 26)
+motion_scale = Vector2(0.7, 0.05)
+motion_mirroring = Vector2(2640, 0)
 
 [node name="TextureRect" type="TextureRect" parent="Trees"]
 offset_top = 53.0
-offset_right = 880.0
+offset_right = 2640.0
 offset_bottom = 421.0
 texture = ExtResource("2_bu6jb")
 stretch_mode = 1

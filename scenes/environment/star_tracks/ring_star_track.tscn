@@ -5,3 +5,6 @@
 
 [node name="RingStarTrack" instance=ExtResource("1_ifnyk")]
 script = ExtResource("1_6xu1k")
+inner_radius = 50.0
+outer_radius = 75.0
+push_foce = 100.0

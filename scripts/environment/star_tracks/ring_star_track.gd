@@ -2,27 +2,28 @@ extends StarTrack
 class_name RingStarTrack
 
 # 圆环的内半径
-var inner_radius: float = 50.0
+@export var inner_radius: float = 50.0
 
 # 圆环的外半径  
-var outer_radius: float = 75.0 
+@export var outer_radius: float = 75.0 
 
 # 圆环的分段数
 var seg_count: int = 72
 
-# 圆环的颜色
-var ring_color: Color = Color(0.2, 0.2, 0.2)  # 深灰色
+# 圆环的颜色（半透明）
+var ring_color: Color = Color(0.2, 0.2, 0.2, 0.5)  # 深灰色，50% 透明度
 
 # 向心力因子
 var centripetal_force_factor: float = 0.013
 
+@export var push_foce : float = 100.0
 
 func _ready() -> void:
     super()
     create_circle_ring()
 
 
-func setup(inner_rad: float, outer_rad: float, seg: int, color: Color) -> void:
+func setup(inner_rad: float, outer_rad: float, seg: int, force: float, color: Color) -> void:
     """
     设置圆环的参数
     
@@ -35,6 +36,7 @@ func setup(inner_rad: float, outer_rad: float, seg: int, color: Color) -> void:
     inner_radius = inner_rad
     outer_radius = outer_rad
     seg_count = seg
+    push_foce = force
     ring_color = color
     return
 
@@ -64,6 +66,10 @@ func create_circle_ring() -> void:
     polygon.color = ring_color
     polygon.antialiased = true
     polygon.set_polygon(points)
+    
+    # 确保 Polygon2D 支持透明度
+    polygon.use_parent_material = false
+    
     add_child(polygon)
 
     var col_polygon := CollisionPolygon2D.new()
@@ -98,11 +104,11 @@ func get_push_vector(point: Vector2) -> Vector2:
     """
     var local_point := to_local(point) - core_position
     var direction := local_point.normalized().rotated(PI/2)
-    var tangential_force := direction * max_push_force
+    var tangential_force := direction * push_foce
     
     # 计算向心力
     var centripetal_direction := -local_point.normalized()
-    var centripetal_force := centripetal_direction * max_push_force * centripetal_force_factor
+    var centripetal_force := centripetal_direction * push_foce * centripetal_force_factor
     
     # 合并切向力和向心力
     return tangential_force + centripetal_force

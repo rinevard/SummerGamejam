@@ -13,6 +13,7 @@ const ITEM_ARR_SIZE = 4
 @onready var w_label: Label = $VBoxContainer/VBoxContainer/WContainer/Label
 @onready var e_label: Label = $VBoxContainer/VBoxContainer/EContainer/Label
 @onready var r_label: Label = $VBoxContainer/VBoxContainer/RContainer/Label
+@onready var score_label: Label = $VBoxContainer/ScoreLabel
 
 var container_textures: Array[TextureRect]
 var container_labels: Array[Label]
@@ -33,12 +34,15 @@ func _on_item_arr_updated() -> void:
                 container_textures[i].modulate.a = 0.5
                 container_labels[i].show()
             else:
-                container_textures[i].modulate.a = 1.0
+                container_textures[i].modulate.a = 1
                 container_labels[i].hide()
         else:
             container_textures[i].texture = default_texture
-            container_textures[i].modulate.a = 1.0
+            container_textures[i].modulate.a = 0.2
             container_labels[i].hide()
 
 func _on_player_health_changed(new_health: int) -> void:
     heart_list.update_health_display(new_health)
+
+func _on_score_changed(new_score: int):
+    score_label.text = "分数：" + str(new_score)

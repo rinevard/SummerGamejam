@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://bcko0mlj72bsw"]
+
+[ext_resource type="Script" path="res://scripts/UIs/score.gd" id="1_r54ri"]
+
+[node name="ScorePop" type="Label"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -66.0
+offset_top = -11.5
+offset_right = 66.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+script = ExtResource("1_r54ri")

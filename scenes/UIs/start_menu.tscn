@@ -1,31 +1,56 @@
-[gd_scene load_steps=2 format=3 uid="uid://d2i14fio40a4f"]
+[gd_scene load_steps=6 format=3 uid="uid://d2i14fio40a4f"]
 
 [ext_resource type="Script" path="res://scripts/UIs/start_menu.gd" id="1_y7hep"]
+[ext_resource type="Texture2D" uid="uid://bmgkgo3g2iig7" path="res://assets/Background/sky.png" id="2_ag7ig"]
+[ext_resource type="PackedScene" uid="uid://bwhbtcf3gwdwc" path="res://scenes/environment/star_tracks/star_track_handler.tscn" id="2_y6xa6"]
+[ext_resource type="PackedScene" uid="uid://b3a1vh5tfoe2p" path="res://scenes/environment/star_tracks/ring_star_track.tscn" id="3_0c21a"]
+[ext_resource type="AudioStream" uid="uid://b0c1bbji8ip5t" path="res://assets/Music/Title Screen.mp3" id="5_hrtok"]
 
 [node name="StartMenu" type="Control"]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 4
-size_flags_vertical = 6
+size_flags_vertical = 4
 script = ExtResource("1_y7hep")
 
 [node name="TextureRect" type="TextureRect" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_ag7ig")
 
 [node name="TitleLabel" type="Label" parent="."]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 124.0
+offset_right = 80.0
+offset_bottom = 234.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 80
+text = "星轨"
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 0
-offset_right = 72.0
-offset_bottom = 101.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 
 [node name="TutorialButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -33,8 +58,26 @@ text = "开始教程"
 
 [node name="StartButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "开始游戏"
+text = "开始关卡
+"
 
 [node name="ExitButton" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "退出游戏"
+
+[node name="StarTrackHandler" parent="." instance=ExtResource("2_y6xa6")]
+
+[node name="RingStarTrack" parent="StarTrackHandler" instance=ExtResource("3_0c21a")]
+position = Vector2(922, 317)
+
+[node name="RingStarTrack2" parent="StarTrackHandler" instance=ExtResource("3_0c21a")]
+position = Vector2(978, 317)
+
+[node name="RingStarTrack3" parent="StarTrackHandler" instance=ExtResource("3_0c21a")]
+position = Vector2(121, 324)
+
+[node name="RingStarTrack4" parent="StarTrackHandler" instance=ExtResource("3_0c21a")]
+position = Vector2(177, 324)
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("5_hrtok")

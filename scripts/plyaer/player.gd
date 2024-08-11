@@ -36,6 +36,7 @@ const ACTION_TO_INDEX := {
     "ui_e": 2,
     "ui_r": 3
 }
+const PLAYER_MAX_HEALTH = 8
 
 @export var item_arr: ItemArray
 @export var death_menu: DeathMenu
@@ -84,14 +85,13 @@ var current_score: int = 0
 @onready var _star_detector: Area2D = $StarDetector
 @onready var _player_collision: CollisionShape2D = $BoxCollision
 @onready var _wall_detector: Area2D = $WallStuckDetector
-@onready var _hud: CanvasLayer = $HUD
 @onready var _player_stomp: Area2D = $StarDetector
 @onready var _flower_detector: Area2D = $FlowerDetector
 @onready var _score_pop_container: VBoxContainer = $ScorePopContainer
 
 func _ready() -> void:
     _clear_items()
-    _update_health(player_health)
+    _update_health(PLAYER_MAX_HEALTH)
     _change_score(0)
     add_to_group("Player")
     _flower_detector.add_to_group("FlowerDetector")
@@ -266,6 +266,8 @@ func _normal_move(delta: float) -> void:
 
     var direction := Input.get_axis("ui_left", "ui_right")
     velocity.x = direction * SPEED if direction else move_toward(velocity.x, 0, SPEED)
+    if velocity.y >= 1000: # 避免玩家下落速度过快而在踩到怪时由于怪的碰撞伤害受伤
+        velocity.y = 1000
 
 func _core_move(delta: float) -> void:
     var direction := Vector2(

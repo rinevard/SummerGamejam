@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://deyfn3e3knr4y"]
-
-[ext_resource type="Script" path="res://forTest/StickyTrack/sticky_ring.gd" id="1_lxkxu"]
-
-[node name="StickyRing" type="Area2D" groups=["StickyTrack"]]
-position = Vector2(484, 322)
-collision_layer = 8
-collision_mask = 16
-script = ExtResource("1_lxkxu")

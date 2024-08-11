@@ -25,35 +25,35 @@
 [ext_resource type="AudioStream" uid="uid://c842d7v0udj6r" path="res://assets/Music/Main Level.wav" id="19_ivmv8"]
 [ext_resource type="PackedScene" uid="uid://drsu54ctrdahp" path="res://scenes/environment/death_areas/death_area.tscn" id="24_cifgy"]
 
-[sub_resource type="Resource" id="Resource_daua0"]
+[sub_resource type="Resource" id="Resource_ewpkx"]
 resource_local_to_scene = true
 script = ExtResource("14_mwhxg")
 name = 4
 icon = ExtResource("15_owtrl")
 clicked_times = 0
 
-[sub_resource type="Resource" id="Resource_od11l"]
+[sub_resource type="Resource" id="Resource_r5dxe"]
 resource_local_to_scene = true
 script = ExtResource("14_mwhxg")
 name = 2
 icon = ExtResource("13_fa64g")
 clicked_times = 0
 
-[sub_resource type="Resource" id="Resource_1mj4d"]
+[sub_resource type="Resource" id="Resource_urmg4"]
 resource_local_to_scene = true
 script = ExtResource("14_mwhxg")
 name = 4
 icon = ExtResource("15_owtrl")
 clicked_times = 0
 
-[sub_resource type="Resource" id="Resource_vo076"]
+[sub_resource type="Resource" id="Resource_kmvef"]
 resource_local_to_scene = true
 script = ExtResource("14_mwhxg")
 name = 4
 icon = ExtResource("15_owtrl")
 clicked_times = 0
 
-[sub_resource type="Resource" id="Resource_l2b3s"]
+[sub_resource type="Resource" id="Resource_7ntb5"]
 resource_local_to_scene = true
 script = ExtResource("14_mwhxg")
 name = 4
@@ -64,6 +64,7 @@ clicked_times = 0
 script = ExtResource("1_7o1mf")
 
 [node name="ParallaxBackground" parent="." instance=ExtResource("1_ypxr4")]
+scroll_offset = Vector2(0, -575)
 
 [node name="TileMap" type="TileMap" parent="."]
 tile_set = ExtResource("2_i3hxe")
@@ -129,6 +130,10 @@ outer_radius = 100.0
 metadata/_edit_lock_ = true
 
 [node name="Posts" type="Node2D" parent="."]
+
+[node name="SignPost0" parent="Posts" instance=ExtResource("7_0qn6x")]
+position = Vector2(38, -75)
+text = "我是一个彩色的蛋"
 
 [node name="SignPost1" parent="Posts" instance=ExtResource("7_0qn6x")]
 position = Vector2(149, 301)
@@ -211,7 +216,7 @@ fix_item = ExtResource("11_a5tie")
 
 [node name="Flower3" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-884, 527)
-fix_item = SubResource("Resource_daua0")
+fix_item = SubResource("Resource_ewpkx")
 
 [node name="Flower4" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-944, 733)
@@ -231,19 +236,19 @@ fix_item = ExtResource("15_xdfon")
 
 [node name="Flower10" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-1526, 704)
-fix_item = SubResource("Resource_od11l")
+fix_item = SubResource("Resource_r5dxe")
 
 [node name="Flower11" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-1350, 648)
-fix_item = SubResource("Resource_1mj4d")
+fix_item = SubResource("Resource_urmg4")
 
 [node name="Flower12" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-1428, 724)
-fix_item = SubResource("Resource_vo076")
+fix_item = SubResource("Resource_kmvef")
 
 [node name="Flower13" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-1529, 546)
-fix_item = SubResource("Resource_l2b3s")
+fix_item = SubResource("Resource_7ntb5")
 
 [node name="Flower14" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-1398, 537)
@@ -270,13 +275,14 @@ death_menu = NodePath("../DeathMenu")
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
 scale = Vector2(0.2, 0.2)
-limit_left = 0
+limit_left = -200
 limit_right = 2000
 limit_bottom = 1200
 metadata/_edit_lock_ = true
 
 [node name="PauseMenu" parent="." instance=ExtResource("17_y4w7o")]
 visible = false
+reset_path = "res://scenes/levels/tutorial.tscn"
 
 [node name="DeathMenu" parent="." instance=ExtResource("18_r3ur7")]
 visible = false

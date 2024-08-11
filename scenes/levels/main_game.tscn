@@ -207,7 +207,7 @@ width = 40.0
 height = 40.0
 
 [node name="Player" parent="." node_paths=PackedStringArray("death_menu") instance=ExtResource("15_sp8rf")]
-position = Vector2(2106, 618)
+position = Vector2(2063, 626)
 death_menu = NodePath("../DeathMenu")
 
 [node name="Camera2D" type="Camera2D" parent="Player"]
@@ -220,6 +220,7 @@ metadata/_edit_lock_ = true
 
 [node name="PauseMenu" parent="." instance=ExtResource("11_l1y1o")]
 visible = false
+reset_path = "res://scenes/levels/main_game.tscn"
 
 [node name="DeathMenu" parent="." instance=ExtResource("12_1e4mp")]
 visible = false

@@ -33,9 +33,15 @@ layout_mode = 2
 layout_mode = 2
 text = "继续游戏"
 
+[node name="Reset" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "重新开始
+"
+
 [node name="Quit" type="Button" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "回到菜单"
 
 [connection signal="button_down" from="MarginContainer/VBoxContainer/Resume" to="." method="_on_resume_button_down"]
+[connection signal="button_down" from="MarginContainer/VBoxContainer/Reset" to="." method="_on_reset_button_down"]
 [connection signal="button_down" from="MarginContainer/VBoxContainer/Quit" to="." method="_on_quit_button_down"]

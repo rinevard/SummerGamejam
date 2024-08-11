@@ -9,12 +9,12 @@ var _star_tracks : Array[StarTrack] = []
 var _is_alive: bool = true
 
 @onready var _star_detector: Area2D = $StarDetector
-@onready var _hurt_box: Area2D = $HurtBox
+@onready var _player_stomp_hurt_box: Area2D = $PlayerStompHurtBox
 @onready var _animation_player: AnimationPlayer = $AnimationPlayer
 
 func _ready() -> void:
     add_to_group("Enemy")
-    _hurt_box.add_to_group("EnemyHead")
+    _player_stomp_hurt_box.add_to_group("EnemyHead")
     _star_detector.area_entered.connect(_on_star_detector_area_entered)
     _star_detector.area_exited.connect(_on_star_detector_area_exited)
     _animation_player.play("move")
@@ -43,9 +43,10 @@ func _on_star_detector_area_exited(area: Node2D) -> void:
 func update_target_position(target_position: Vector2) -> void:
     _target_position = target_position
 
-func _on_hurt_box_area_entered(_area: Area2D) -> void:
+func _on_player_stomp_hurt_box_area_entered(_area: Area2D) -> void:
     print("hurt")
     velocity.y = -ghost_speed
+    
     die()  # 触发 ghost 的死亡逻辑
 
 func die() -> void:
@@ -57,5 +58,5 @@ func die() -> void:
     queue_free()
 
 
-func _on_hurt_detector_area_entered(area:Area2D):
+func _on_red_wall_hurt_detector_area_entered(_area:Area2D):
     die()

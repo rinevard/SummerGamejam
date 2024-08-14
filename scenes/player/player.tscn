@@ -530,6 +530,24 @@ grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 8
 
+[node name="UnstuckRays" type="Node2D" parent="."]
+
+[node name="RayUp" type="RayCast2D" parent="UnstuckRays"]
+target_position = Vector2(0, -15)
+collision_mask = 2
+
+[node name="RayLeft" type="RayCast2D" parent="UnstuckRays"]
+target_position = Vector2(-20, 0)
+collision_mask = 2
+
+[node name="RayRight" type="RayCast2D" parent="UnstuckRays"]
+target_position = Vector2(20, 0)
+collision_mask = 2
+
+[node name="RayDown" type="RayCast2D" parent="UnstuckRays"]
+target_position = Vector2(0, 20)
+collision_mask = 2
+
 [connection signal="item_arr_updated" from="." to="HUD" method="_on_item_arr_updated"]
 [connection signal="player_health_changed" from="." to="HUD" method="_on_player_health_changed"]
 [connection signal="score_updated" from="." to="HUD" method="_on_score_changed"]

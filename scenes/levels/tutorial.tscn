@@ -25,35 +25,35 @@
 [ext_resource type="AudioStream" uid="uid://c842d7v0udj6r" path="res://assets/Music/Main Level.wav" id="19_ivmv8"]
 [ext_resource type="PackedScene" uid="uid://drsu54ctrdahp" path="res://scenes/environment/death_areas/death_area.tscn" id="24_cifgy"]
 
-[sub_resource type="Resource" id="Resource_ewpkx"]
+[sub_resource type="Resource" id="Resource_u1r5y"]
 resource_local_to_scene = true
 script = ExtResource("14_mwhxg")
 name = 4
 icon = ExtResource("15_owtrl")
 clicked_times = 0
 
-[sub_resource type="Resource" id="Resource_r5dxe"]
+[sub_resource type="Resource" id="Resource_cg42u"]
 resource_local_to_scene = true
 script = ExtResource("14_mwhxg")
 name = 2
 icon = ExtResource("13_fa64g")
 clicked_times = 0
 
-[sub_resource type="Resource" id="Resource_urmg4"]
+[sub_resource type="Resource" id="Resource_t2x6s"]
 resource_local_to_scene = true
 script = ExtResource("14_mwhxg")
 name = 4
 icon = ExtResource("15_owtrl")
 clicked_times = 0
 
-[sub_resource type="Resource" id="Resource_kmvef"]
+[sub_resource type="Resource" id="Resource_upbtw"]
 resource_local_to_scene = true
 script = ExtResource("14_mwhxg")
 name = 4
 icon = ExtResource("15_owtrl")
 clicked_times = 0
 
-[sub_resource type="Resource" id="Resource_7ntb5"]
+[sub_resource type="Resource" id="Resource_35c2f"]
 resource_local_to_scene = true
 script = ExtResource("14_mwhxg")
 name = 4
@@ -216,7 +216,7 @@ fix_item = ExtResource("11_a5tie")
 
 [node name="Flower3" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-884, 527)
-fix_item = SubResource("Resource_ewpkx")
+fix_item = SubResource("Resource_u1r5y")
 
 [node name="Flower4" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-944, 733)
@@ -236,19 +236,19 @@ fix_item = ExtResource("15_xdfon")
 
 [node name="Flower10" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-1526, 704)
-fix_item = SubResource("Resource_r5dxe")
+fix_item = SubResource("Resource_cg42u")
 
 [node name="Flower11" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-1350, 648)
-fix_item = SubResource("Resource_urmg4")
+fix_item = SubResource("Resource_t2x6s")
 
 [node name="Flower12" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-1428, 724)
-fix_item = SubResource("Resource_kmvef")
+fix_item = SubResource("Resource_upbtw")
 
 [node name="Flower13" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-1529, 546)
-fix_item = SubResource("Resource_7ntb5")
+fix_item = SubResource("Resource_35c2f")
 
 [node name="Flower14" parent="FlowerHandler" instance=ExtResource("8_crnpa")]
 position = Vector2(-1398, 537)
